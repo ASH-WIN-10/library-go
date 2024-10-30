@@ -5,10 +5,13 @@ import (
 	"net/http"
 )
 
+type application struct{}
+
 func main() {
-	err := http.ListenAndServe(":8080", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello, World!"))
-	}))
+	app := &application{}
+
+	log.Printf("Starting the server at port :8080")
+	err := http.ListenAndServe(":8080", app.routes())
 	if err != nil {
 		log.Fatal(err)
 	}
