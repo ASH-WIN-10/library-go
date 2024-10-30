@@ -1,3 +1,4 @@
+{{define "index"}}
 <!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -18,33 +19,12 @@
 
 		<dialog class="addBook">
 			<button id="closeBtn"><img src="/static/img/close.svg" alt="close"></button>
-			<form>
-				<div class="field">
-					<label for="title">Title</label>
-					<input type="text" name="title" id="title" required/>
-				</div>
-
-				<div class="field">
-					<label for="author">Author</label>
-					<input type="text" name="author" id="author" required/>
-				</div>
-
-				<div class="field">
-					<label for="pages">Pages</label>
-					<input type="number" name="pages" id="pages"/>
-				</div>
-
-				<div class="checkboxField">
-					<input type="checkbox" name="read" id="read"/>
-					<label for="read">Read</label>
-				</div>
-
-				<button type="submit">Submit</button>
-			</form>
+            {{template "form" .}}
 		</dialog>
 
-		<main></main>
+        <main>{{template "cards" .}}</main>
 
 		<script src="/static/js/main.js"></script>
 	</body>
 </html>
+{{end}}

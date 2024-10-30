@@ -1,0 +1,23 @@
+{{define "cards"}}
+    {{if .Books}}
+        {{range .Books}}
+            <div class="card">
+                <div class="info">
+                    <span><b>Title: </b>{{.Title}}</span>
+                    <span><b>Author: </b>{{.Author}}</span>
+                    <span><b>Pages: </b>{{.Pages}}</span>
+                </div>
+                <div class="btns">
+                    {{if .ReadStatus}}
+                        <button id="readBtn" class="read"></button>
+                    {{else}}
+                        <button id="readBtn" class=""></button>
+                    {{end}}
+                    <button id="removeBtn">Remove</button>
+                </div>
+            </div>
+        {{end}}
+    {{else}}
+        <div class="empty">Empty</div>
+    {{end}}
+{{end}}

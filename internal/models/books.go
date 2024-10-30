@@ -3,6 +3,7 @@ package models
 import "database/sql"
 
 type Book struct {
+	ID         int
 	Title      string
 	Author     string
 	Pages      int
@@ -21,6 +22,7 @@ func NewBookModel(db *sql.DB) *BookModel {
 
 func (m *BookModel) Migrate() error {
 	stmt := `CREATE TABLE IF NOT EXISTS Book (
+    ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     Title TEXT NOT NULL,
     Author TEXT NOT NULL,
     Pages INTEGER NOT NULL,
@@ -41,4 +43,28 @@ func (m *BookModel) Insert(book Book) error {
 	}
 
 	return nil
+}
+
+func (m *BookModel) All() ([]Book, error) {
+	stmt := `SELECT * FROM Book`
+
+	rows, err := m.DB.Query(stmt)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var books []Book
+	for rows.Next() {
+		var b Book
+
+		err = rows.Scan(&b.Title, &b.Author, &b.Pages, &b.ReadStatus)
+		if err != nil {
+			return nil, err
+		}
+
+		books = append(books, b)
+	}
+
+	return books, nil
 }

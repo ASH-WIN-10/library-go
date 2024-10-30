@@ -8,15 +8,37 @@ import (
 	"github.com/ASH-WIN-10/library-go/internal/models"
 )
 
+type TemplateData struct {
+	Book  models.Book
+	Books []models.Book
+}
+
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
-	ts, err := template.ParseFiles("./ui/html/index.html")
+	books, err := app.books.All()
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		log.Print(err.Error())
 		return
 	}
 
-	err = ts.Execute(w, nil)
+	files := []string{
+		"./ui/html/index.html",
+		"./ui/html/partials/card.html",
+		"./ui/html/partials/form.html",
+	}
+
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		log.Print(err.Error())
+		return
+	}
+
+	data := TemplateData{
+		Books: books,
+	}
+
+	err = ts.ExecuteTemplate(w, "index", data)
 	if err != nil {
 		log.Print(err.Error())
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
