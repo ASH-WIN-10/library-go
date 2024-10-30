@@ -11,6 +11,7 @@ func (app *application) routes() *http.ServeMux {
 
 	// routes
 	mux.HandleFunc("GET /{$}", app.home)
+	mux.HandleFunc("POST /add", app.addBook)
 
 	return mux
 }
