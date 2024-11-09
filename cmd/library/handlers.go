@@ -4,6 +4,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/ASH-WIN-10/library-go/internal/models"
 )
@@ -47,15 +48,28 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) addBook(w http.ResponseWriter, r *http.Request) {
-	// TODO: take input from a form
-	newBook := models.Book{
-		Title:      "Pride and Prejudice",
-		Author:     "Jane Austin",
-		Pages:      279,
-		ReadStatus: true,
+	err := r.ParseForm()
+
+	pages, err := strconv.Atoi(r.PostForm.Get("pages"))
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
 	}
 
-	err := app.books.Insert(newBook)
+	readStatus := false
+	if r.PostForm.Get("read") == "on" {
+		readStatus = true
+	}
+
+	newBook := models.Book{
+		Title:      r.PostForm.Get("title"),
+		Author:     r.PostForm.Get("author"),
+		Pages:      pages,
+		ReadStatus: readStatus,
+	}
+
+	err = app.books.Insert(newBook)
 	if err != nil {
 		log.Print(err.Error())
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)

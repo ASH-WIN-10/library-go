@@ -58,7 +58,7 @@ func (m *BookModel) All() ([]Book, error) {
 	for rows.Next() {
 		var b Book
 
-		err = rows.Scan(&b.Title, &b.Author, &b.Pages, &b.ReadStatus)
+		err = rows.Scan(&b.ID, &b.Title, &b.Author, &b.Pages, &b.ReadStatus)
 		if err != nil {
 			return nil, err
 		}
