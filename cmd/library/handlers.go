@@ -2,7 +2,6 @@ package main
 
 import (
 	"html/template"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -17,8 +16,7 @@ type TemplateData struct {
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
 	books, err := app.books.All()
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		log.Print(err.Error())
+		app.serverError(w, r, err)
 		return
 	}
 
@@ -30,8 +28,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		log.Print(err.Error())
+		app.serverError(w, r, err)
 		return
 	}
 
@@ -41,8 +38,7 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 
 	err = ts.ExecuteTemplate(w, "index", data)
 	if err != nil {
-		log.Print(err.Error())
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		app.serverError(w, r, err)
 		return
 	}
 }
@@ -52,8 +48,7 @@ func (app *application) addBook(w http.ResponseWriter, r *http.Request) {
 
 	pages, err := strconv.Atoi(r.PostForm.Get("pages"))
 	if err != nil {
-		log.Print(err.Error())
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		app.clientError(w, http.StatusBadRequest)
 		return
 	}
 
@@ -71,8 +66,7 @@ func (app *application) addBook(w http.ResponseWriter, r *http.Request) {
 
 	err = app.books.Insert(newBook)
 	if err != nil {
-		log.Print(err.Error())
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		app.serverError(w, r, err)
 		return
 	}
 
