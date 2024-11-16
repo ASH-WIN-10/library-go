@@ -1,7 +1,6 @@
 package main
 
 import (
-	"html/template"
 	"net/http"
 	"strconv"
 
@@ -20,27 +19,11 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	files := []string{
-		"./ui/html/index.html",
-		"./ui/html/partials/card.html",
-		"./ui/html/partials/form.html",
-	}
-
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(w, r, err)
-		return
-	}
-
 	data := TemplateData{
 		Books: books,
 	}
 
-	err = ts.ExecuteTemplate(w, "index", data)
-	if err != nil {
-		app.serverError(w, r, err)
-		return
-	}
+	app.render(w, r, http.StatusOK, data)
 }
 
 func (app *application) addBook(w http.ResponseWriter, r *http.Request) {
