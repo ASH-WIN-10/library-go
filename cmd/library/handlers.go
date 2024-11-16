@@ -28,6 +28,14 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) addBook(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
+	if err != nil {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	title := r.PostForm.Get("title")
+	author := r.PostForm.Get("author")
+	readStatus := r.PostForm.Get("read") == "on"
 
 	pages, err := strconv.Atoi(r.PostForm.Get("pages"))
 	if err != nil {
@@ -35,14 +43,14 @@ func (app *application) addBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	readStatus := false
-	if r.PostForm.Get("read") == "on" {
-		readStatus = true
+	if title == "" || author == "" {
+		app.clientError(w, http.StatusBadRequest)
+		return
 	}
 
 	newBook := models.Book{
-		Title:      r.PostForm.Get("title"),
-		Author:     r.PostForm.Get("author"),
+		Title:      title,
+		Author:     author,
 		Pages:      pages,
 		ReadStatus: readStatus,
 	}
