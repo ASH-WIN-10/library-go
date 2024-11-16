@@ -11,7 +11,7 @@ func (app *application) serverError(w http.ResponseWriter, r *http.Request, err 
 		uri    = r.URL.RequestURI()
 	)
 
-	log.Print(err.Error(), "method:", method, "uri:", uri)
+	log.Print(err.Error(), " method=", method, " uri=", uri)
 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 }
 
