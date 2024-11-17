@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"html/template"
 	"log"
 	"net/http"
@@ -38,9 +39,14 @@ func (app *application) render(
 		return
 	}
 
-	err = ts.ExecuteTemplate(w, "index", data)
+	buf := new(bytes.Buffer)
+	err = ts.ExecuteTemplate(buf, "index", data)
 	if err != nil {
 		app.serverError(w, r, err)
 		return
 	}
+
+	w.WriteHeader(status)
+
+	buf.WriteTo(w)
 }
