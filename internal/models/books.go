@@ -68,3 +68,14 @@ func (m *BookModel) All() ([]Book, error) {
 
 	return books, nil
 }
+
+func (m *BookModel) Delete(id int) error {
+	stmt := `DELETE FROM Book WHERE ID = ?;`
+
+	_, err := m.DB.Exec(stmt, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

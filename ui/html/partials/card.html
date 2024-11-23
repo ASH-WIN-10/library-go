@@ -9,11 +9,11 @@
                 </div>
                 <div class="btns">
                     {{if .ReadStatus}}
-                        <a href="/update/{{.ID}}"><button id="readBtn" class="read">Read</button></a>
+                        <a><button id="readBtn" class="read" data-id="{{.ID}}">Read</button></a>
                     {{else}}
-                        <a href="/update/{{.ID}}"><button id="readBtn" class="">Not Read</button></a>
+                        <a><button id="readBtn" class="" data-id="{{.ID}}">Not Read</button></a>
                     {{end}}
-                    <a href="/delete/{{.ID}}"><button id="removeBtn">Remove</button></a>
+                    <a><button id="removeBtn" data-id="{{.ID}}">Remove</button></a>
                 </div>
             </div>
         {{end}}

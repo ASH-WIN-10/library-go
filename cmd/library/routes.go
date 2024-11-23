@@ -15,6 +15,7 @@ func (app *application) routes() http.Handler {
 	// routes
 	mux.HandleFunc("GET /{$}", app.home)
 	mux.HandleFunc("POST /add", app.addBook)
+	mux.HandleFunc("DELETE /remove/{id}", app.removeBook)
 
 	standard := alice.New(app.recoverPanic, logRequest, commonHeaders)
 	return standard.Then(mux)

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -58,6 +60,27 @@ func (app *application) addBook(w http.ResponseWriter, r *http.Request) {
 	err = app.books.Insert(newBook)
 	if err != nil {
 		app.serverError(w, r, err)
+		return
+	}
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func (app *application) removeBook(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil || id < 1 {
+		http.NotFound(w, r)
+		return
+	}
+
+	err = app.books.Delete(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			log.Println("No record found")
+			http.NotFound(w, r)
+		} else {
+			app.serverError(w, r, err)
+		}
 		return
 	}
 
