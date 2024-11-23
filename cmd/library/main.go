@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"flag"
 	"log"
 	"net/http"
 
@@ -29,8 +30,11 @@ func openDB(dsn string) (*sql.DB, error) {
 }
 
 func main() {
-	dsn := "sqlite.db"
-	db, err := openDB(dsn)
+	addr := flag.String("addr", ":8080", "HTTP network address")
+	dsn := flag.String("dsn", "sqlite.db", "SQLite data source name")
+	flag.Parse()
+
+	db, err := openDB(*dsn)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -45,8 +49,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Printf("Starting the server at port :8080")
-	err = http.ListenAndServe(":8080", app.routes())
+	log.Printf("Starting the server at port %s", *addr)
+	err = http.ListenAndServe(*addr, app.routes())
 	if err != nil {
 		log.Fatal(err)
 	}
