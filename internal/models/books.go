@@ -79,3 +79,14 @@ func (m *BookModel) Delete(id int) error {
 
 	return nil
 }
+
+func (m *BookModel) Update(id int) error {
+	stmt := `UPDATE Book SET ReadStatus = NOT ReadStatus WHERE ID = ?;`
+
+	_, err := m.DB.Exec(stmt, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

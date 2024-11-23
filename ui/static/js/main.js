@@ -6,8 +6,21 @@ async function removeBook(id) {
         if (response.ok) {
             window.location.reload();
         }
-    } catch (error) {
-        console.error(error);
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+async function updateBook(id) {
+    try {
+        const response = await fetch(`/update/${id}`, {
+            method: "PUT",
+        });
+        if (response.ok) {
+            window.location.reload();
+        }
+    } catch (err) {
+        console.error(err);
     }
 }
 
@@ -28,6 +41,14 @@ try {
         removeBtn.onclick = (e) => {
             const id = e.target.attributes["data-id"].value;
             removeBook(id);
+        };
+    }
+
+    const readBtns = document.querySelectorAll("#readBtn");
+    for (const readBtn of readBtns) {
+        readBtn.onclick = (e) => {
+            const id = e.target.attributes["data-id"].value;
+            updateBook(id);
         };
     }
 } catch (error) {}

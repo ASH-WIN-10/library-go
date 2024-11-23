@@ -86,3 +86,24 @@ func (app *application) removeBook(w http.ResponseWriter, r *http.Request) {
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
+
+func (app *application) updateBook(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if err != nil || id < 1 {
+		http.NotFound(w, r)
+		return
+	}
+
+	err = app.books.Update(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNoRecord) {
+			log.Println("no record found")
+			http.NotFound(w, r)
+		} else {
+			app.serverError(w, r, err)
+		}
+		return
+	}
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
