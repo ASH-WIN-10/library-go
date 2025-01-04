@@ -3,15 +3,17 @@ package main
 import (
 	"database/sql"
 	"flag"
-	"log"
+	"log/slog"
 	"net/http"
+	"os"
 
 	"github.com/ASH-WIN-10/library-go/internal/models"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 type application struct {
-	books *models.BookModel
+	logger *slog.Logger
+	books  *models.BookModel
 }
 
 func openDB(dsn string) (*sql.DB, error) {
@@ -30,28 +32,33 @@ func openDB(dsn string) (*sql.DB, error) {
 }
 
 func main() {
+	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+
 	addr := flag.String("addr", ":8080", "HTTP network address")
 	dsn := flag.String("dsn", "sqlite.db", "SQLite data source name")
 	flag.Parse()
 
 	db, err := openDB(*dsn)
 	if err != nil {
-		log.Fatal(err)
+		logger.Error(err.Error())
+		os.Exit(1)
 	}
 	defer db.Close()
 
 	app := &application{
-		books: models.NewBookModel(db),
+		logger: logger,
+		books:  models.NewBookModel(db),
 	}
 
 	// Create the Book table, Exit if it does not exist
 	if err := app.books.Migrate(); err != nil {
-		log.Fatal(err)
+		logger.Error(err.Error())
+		os.Exit(1)
 	}
 
-	log.Printf("Starting the server at port %s", *addr)
+	logger.Info("starting server", "addr", *addr)
+
 	err = http.ListenAndServe(*addr, app.routes())
-	if err != nil {
-		log.Fatal(err)
-	}
+	logger.Error(err.Error())
+	os.Exit(1)
 }

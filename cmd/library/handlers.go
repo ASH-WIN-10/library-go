@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -76,7 +75,6 @@ func (app *application) removeBook(w http.ResponseWriter, r *http.Request) {
 	err = app.books.Delete(id)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
-			log.Println("No record found")
 			http.NotFound(w, r)
 		} else {
 			app.serverError(w, r, err)
@@ -97,7 +95,6 @@ func (app *application) updateBook(w http.ResponseWriter, r *http.Request) {
 	err = app.books.Update(id)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
-			log.Println("no record found")
 			http.NotFound(w, r)
 		} else {
 			app.serverError(w, r, err)

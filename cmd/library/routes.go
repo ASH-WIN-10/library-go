@@ -18,6 +18,6 @@ func (app *application) routes() http.Handler {
 	mux.HandleFunc("DELETE /remove/{id}", app.removeBook)
 	mux.HandleFunc("PUT /update/{id}", app.updateBook)
 
-	standard := alice.New(app.recoverPanic, logRequest, commonHeaders)
+	standard := alice.New(app.recoverPanic, app.logRequest, commonHeaders)
 	return standard.Then(mux)
 }

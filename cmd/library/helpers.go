@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"html/template"
-	"log"
 	"net/http"
 )
 
@@ -13,7 +12,7 @@ func (app *application) serverError(w http.ResponseWriter, r *http.Request, err 
 		uri    = r.URL.RequestURI()
 	)
 
-	log.Print(err.Error(), " method=", method, " uri=", uri)
+	app.logger.Error(err.Error(), " method=", method, " uri=", uri)
 	http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 }
 
